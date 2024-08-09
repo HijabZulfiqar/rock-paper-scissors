@@ -4,6 +4,7 @@ import logo from "../../assets/images/logo.svg";
 import paper from "../../assets/images/icon-paper.svg";
 import rock from "../../assets/images/icon-rock.svg";
 import scissors from "../../assets/images/icon-scissors.svg";
+import triangle from "../../assets/images/bg-triangle.svg";
 import {
   setOpponentChoice,
   setWinnerText,
@@ -104,7 +105,7 @@ const PlayingGame = () => {
 
   if (gameState === "playing") {
     return (
-      <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst min-h-screen mx-auto">
+      <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst min-h-screen mx-auto flex flex-col justify-between">
         <div className="flex justify-center ">
           <header className="p-6 border-4 border-headerOutline rounded-xl w-full mt-3 max-w-4xl">
             <div className="flex items-center justify-between">
@@ -136,69 +137,106 @@ const PlayingGame = () => {
             </div>
           </header>
         </div>
-        <div className="flex flex-col items-center justify-center">
-          {gameState === "playing" && (
-            <div className="container">
-              <div className="flex justify-between items-center w-full p-4">
+
+        <div className="flex flex-col items-center justify-center flex-grow  ">
+          {!playerChoice ? (
+            <div className="flex justify-center  relative min-h-[14rem]">
+              <img src={triangle} alt="Triangle Layout" className="h-56" />
+              <button
+                className="absolute bottom-44 left-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-paperRing hover:scale-110 transition-transform"
+                onClick={() => handleSendChoice("Paper")}
+              >
+                <img src={paper} alt="Paper" />
+              </button>
+              <button
+                className="absolute top-36 right-[66%] left-[34.7%] bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-rockRing hover:scale-110 transition-transform"
+                onClick={() => handleSendChoice("Rock")}
+              >
+                <img src={rock} alt="Rock" />
+              </button>
+              <button
+                className="absolute bottom-44 right-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-scissorsRing hover:scale-110 transition-transform"
+                onClick={() => handleSendChoice("Scissors")}
+              >
+                <img src={scissors} alt="Scissors" />
+              </button>
+            </div>
+          ) : bothPlayersReady ? (
+            <div className="flex justify-center items-center mt-40 space-x-8">
+              <div className="flex justify-between gap-20">
                 <div>
-                  You:
-                  <div>
-                    {!playerChoice ? (
-                      <>
-                        <button
-                          className="absolute bottom-44 left-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-paperRing hover:scale-110 transition-transform"
-                          onClick={() => handleSendChoice("Paper")}
-                        >
-                          <img src={paper} alt="Paper" />
-                        </button>
-                        <button
-                          className="absolute top-36 right-[66%] left-[34.7%] bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-rockRing hover:scale-110 transition-transform"
-                          onClick={() => handleSendChoice("Rock")}
-                        >
-                          <img src={rock} alt="Rock" />
-                        </button>
-                        <button
-                          className="absolute bottom-44 right-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-scissorsRing hover:scale-110 transition-transform"
-                          onClick={() => handleSendChoice("Scissors")}
-                        >
-                          <img src={scissors} alt="Scissors" />
-                        </button>
-                      </>
-                    ) : (
-                      <button className="bg-gray-300 text-black px-4 py-2 rounded">
-                        You chose: {playerChoice}
-                      </button>
-                    )}
-                  </div>
+                  {playerChoice === "Paper" && (
+                    <button
+                      className="bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-paperRing"
+                      disabled
+                    >
+                      <img src={paper} alt="Paper" />
+                    </button>
+                  )}
+                  {playerChoice === "Rock" && (
+                    <button
+                      className="bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-rockRing"
+                      disabled
+                    >
+                      <img src={rock} alt="Rock" />
+                    </button>
+                  )}
+                  {playerChoice === "Scissors" && (
+                    <button
+                      className="bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-scissorsRing"
+                      disabled
+                    >
+                      <img src={scissors} alt="Scissors" />
+                    </button>
+                  )}
                 </div>
                 <div>
-                  Opponent:
-                  <div>
-                    {opponentChoice ? (
-                      <button className="bg-gray-300 text-black px-4 py-2 rounded">
-                        Opponent made a choice
-                      </button>
-                    ) : (
-                      <p>Waiting for opponent to choose...</p>
-                    )}
-                  </div>
+                  {opponentChoice === "Paper" && (
+                    <button
+                      className="bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-paperRing"
+                      disabled
+                    >
+                      <img src={paper} alt="Paper" />
+                    </button>
+                  )}
+                  {opponentChoice === "Rock" && (
+                    <button
+                      className="bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-rockRing"
+                      disabled
+                    >
+                      <img src={rock} alt="Rock" />
+                    </button>
+                  )}
+                  {opponentChoice === "Scissors" && (
+                    <button
+                      className="bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-scissorsRing"
+                      disabled
+                    >
+                      <img src={scissors} alt="Scissors" />
+                    </button>
+                  )}
                 </div>
               </div>
-              <hr />
-              {bothPlayersReady && (
-                <div className="text-2xl mt-4">{winnerText}</div>
-              )}
-              {winnerText && (
-                <button
-                  className="bg-purple-500 text-white px-6 py-2 rounded mt-4"
-                  onClick={handleReplayGame}
-                >
-                  Replay
-                </button>
-              )}
             </div>
+          ) : (
+            <p className="text-xl mt-4">Waiting for opponent to choose...</p>
           )}
         </div>
+
+        {bothPlayersReady && winnerText && (
+          <div className="text-2xl text-center mt-8">{winnerText}</div>
+        )}
+
+        {winnerText && (
+          <div className="flex justify-center mt-8 mb-4">
+            <button
+              className="bg-purple-500 text-white px-6 py-2 rounded"
+              onClick={handleReplayGame}
+            >
+              Replay
+            </button>
+          </div>
+        )}
       </div>
     );
   }
