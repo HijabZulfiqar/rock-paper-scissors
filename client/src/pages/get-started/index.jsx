@@ -79,7 +79,7 @@ const GetStarted = () => {
 
   return (
     <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst h-screen relative mx-auto">
-      <header className="flex justify-start p-4 bg-[#184e77]">
+      <header className="flex justify-start p-4  border-b border-bgFirst ">
         <img src={logo} alt="Logo" className="h-16" />{" "}
       </header>
 
