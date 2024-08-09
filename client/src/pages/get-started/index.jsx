@@ -1,84 +1,69 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
-
-const socket = io("http://localhost:3000");
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import {
+  setGameState,
+  setRoomUniqueId,
+  setPlayer1,
+  setUsername,
+  setPlayerNames,
+  socket,
+} from "../../features/gameState/gameSlice";
 
 const GetStarted = () => {
-  const [username, setUsername] = useState("");
-  const [roomUniqueId, setRoomUniqueId] = useState("");
-  const [isPlayer1, setIsPlayer1] = useState(false);
-  const [gameState, setGameState] = useState("initial");
-  const [opponentChoice, setOpponentChoice] = useState(null);
-  const [playerChoice, setPlayerChoice] = useState(null);
-  const [winnerText, setWinnerText] = useState("");
-  const [bothPlayersReady, setBothPlayersReady] = useState(false);
-  const [score, setScore] = useState({
-    player1: { wins: 0, losses: 0, draws: 0, points: 0 },
-    player2: { wins: 0, losses: 0, draws: 0, points: 0 },
-  });
-  const [playerNames, setPlayerNames] = useState({ player1: "", player2: "" });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { gameState, roomUniqueId, username } = useSelector(
+    (state) => state.game
+  );
+  const [viewRules, setViewRules] = useState(false);
 
   useEffect(() => {
     socket.on("newGame", (data) => {
-      setRoomUniqueId(data.roomUniqueId);
-      setGameState("waiting");
-      setPlayerNames({ player1: data.username, player2: "" });
+      dispatch(setRoomUniqueId(data.roomUniqueId));
+      dispatch(setGameState("waiting"));
+      dispatch(setPlayerNames({ player1: data.username, player2: "" }));
     });
 
     socket.on("playersConnected", (data) => {
-      setGameState("playing");
+      dispatch(setGameState("playing"));
       const player1Id = Object.keys(data.usernames)[0];
       const player2Id = Object.keys(data.usernames)[1];
-      setPlayerNames({
-        player1: data.usernames[player1Id],
-        player2: data.usernames[player2Id],
-      });
-      navigate("/playing-game", {
-        state: {
-          roomUniqueId,
-          username,
-          isPlayer1,
-          gameState: "playing",
-        },
-      });
-    });
-
-    socket.on("p1Choice", (data) => {
-      if (!isPlayer1) {
-        setOpponentChoice(data.rpsValue);
-      }
-    });
-
-    socket.on("p2Choice", (data) => {
-      if (isPlayer1) {
-        setOpponentChoice(data.rpsValue);
-      }
+      dispatch(
+        setPlayerNames({
+          player1: data.usernames[player1Id],
+          player2: data.usernames[player2Id],
+        })
+      );
+      navigate("/playing-game");
     });
 
     return () => {
       socket.off("newGame");
       socket.off("playersConnected");
-      socket.off("p1Choice");
-      socket.off("p2Choice");
-      socket.off("result");
-      socket.off("replayGame");
     };
-  }, [isPlayer1, score, navigate, roomUniqueId, username]);
+  }, [dispatch, navigate]);
+
+  const showRules = () => {
+    navigate("/rules");
+  };
 
   const createGame = () => {
     if (username.trim() === "") {
-      alert("Please enter a username to create a game.");
+      toast.error("Please enter a username to create a game.");
       return;
     }
-    setIsPlayer1(true);
+    dispatch(setPlayer1(true));
     socket.emit("createGame", { username: username.trim() });
   };
 
   const joinGame = () => {
     if (username.trim() === "") {
-      alert("Please enter a username to join a game.");
+      toast.error("Please enter a username to join a game.");
       return;
     }
     socket.emit("joinGame", { roomUniqueId, username: username.trim() });
@@ -86,47 +71,85 @@ const GetStarted = () => {
 
   const copyRoomCode = () => {
     navigator.clipboard.writeText(roomUniqueId).then(
-      () => console.log("Copying to clipboard was successful!"),
-      (err) => console.error("Could not copy text: ", err)
+      () => toast.success("Room code copied to clipboard!"),
+      (err) => toast.error("Could not copy text: " + err)
     );
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold underline py-4">
-        Welcome to Rock, Paper, Scissors game
-      </h1>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Enter your username"
-        className="input"
-      />
-      <button onClick={createGame} className="create-btn">
-        Create Game
-      </button>
-      <input
-        type="text"
-        value={roomUniqueId}
-        onChange={(e) => setRoomUniqueId(e.target.value)}
-        placeholder="Enter room ID to join"
-        className="input"
-      />
-      <button onClick={joinGame} className="join-btn">
-        Join Game
-      </button>
-      {gameState === "waiting" && (
-        <div className="text-lg">
-          Waiting for opponent, please share code {roomUniqueId} to join
-          <button
-            className="ml-2 bg-indigo-500 text-white px-4 py-2 rounded"
-            onClick={copyRoomCode}
-          >
-            Copy Code
-          </button>
+    <div className="bg-bgFirst bg-gradient-to-r  from-bgSecond to-bgFirst h-screen relative mx-auto">
+      <div className="absolute bottom-4 left-4">
+        <Button
+          onClick={showRules}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Rules
+        </Button>
+      </div>
+
+      <div className="flex bg-bgSecond justify-center mx-auto p-8">
+        {gameState === "initial" && (
+          <div className="flex">
+            <Input
+              type="text"
+              value={roomUniqueId}
+              onChange={(e) => dispatch(setRoomUniqueId(e.target.value))}
+              placeholder="Enter room ID to join"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
+            />
+            <Button
+              onClick={joinGame}
+              className="bg-green-950 text-white font-bold py-2 px-4 rounded"
+            >
+              Join Game
+            </Button>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col items-center justify-center mx-auto mt-28">
+        <h1 className="text-4xl font-bold mb-6 text-white ">
+          Rock, Paper, Scissors Game
+        </h1>
+        <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+          <div className="mb-4">
+            <Label className="block text-gray-700 text-sm font-bold mb-2">
+              Enter your name
+            </Label>
+            <Input
+              type="text"
+              value={username}
+              onChange={(e) => dispatch(setUsername(e.target.value))}
+              placeholder="Enter your username"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+
+          {gameState === "initial" && (
+            <div>
+              <Button
+                onClick={createGame}
+                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full mb-4"
+              >
+                Create Game
+              </Button>
+            </div>
+          )}
+
+          {gameState === "waiting" && (
+            <div className="text-lg text-center">
+              Waiting for opponent, please share code{" "}
+              <span className="font-bold">{roomUniqueId}</span> to join
+              <Button
+                className="ml-2 bg-indigo-500 hover:bg-indigo-700 text-white px-4 py-2 rounded mt-2"
+                onClick={copyRoomCode}
+              >
+                Copy Code
+              </Button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

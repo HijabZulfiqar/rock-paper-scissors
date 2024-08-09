@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import Navbar from "./components/Navbar";
-
+import { Toaster } from "sonner";
 const Layout = () => {
   const navigate = useNavigate();
 
@@ -13,8 +13,9 @@ const Layout = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <Outlet />
+      <Toaster />
       {/* Footer */}
     </div>
   );

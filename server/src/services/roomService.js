@@ -19,6 +19,9 @@ function removeUserFromRoom(roomId, userId) {
 }
 
 function setPlayerChoice(roomId, player, choice) {
+  if (!rooms[roomId]) {
+    throw new Error(`Room with ID ${roomId} does not exist.`);
+  }
   rooms[roomId][`${player}Choice`] = choice;
 }
 
