@@ -13,6 +13,7 @@ import {
   setPlayerNames,
   socket,
 } from "../../features/gameState/gameSlice";
+import logo from "../../assets/images/logo.svg";
 
 const GetStarted = () => {
   const navigate = useNavigate();
@@ -77,40 +78,44 @@ const GetStarted = () => {
   };
 
   return (
-    <div className="bg-bgFirst bg-gradient-to-r  from-bgSecond to-bgFirst h-screen relative mx-auto">
+    <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst h-screen relative mx-auto">
+      <header className="flex justify-start p-4 bg-[#184e77]">
+        <img src={logo} alt="Logo" className="h-16" />{" "}
+      </header>
+
       <div className="absolute bottom-4 left-4">
-        <Button
+        {/* <Button
           onClick={showRules}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-[#184e77] text-white font-bold py-2 px-4 rounded"
         >
           Rules
+        </Button> */}
+        <Button
+          onClick={showRules}
+          className="flex bg-[#184e77] text-white gap-2 items-center group px-10"
+        >
+          <span>Rules</span>
+          <span className="group-hover:translate-x-[-2px] transition-all">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevrons-left"
+            >
+              <path d="m11 17-5-5 5-5" />
+              <path d="m18 17-5-5 5-5" />
+            </svg>
+          </span>
         </Button>
       </div>
 
-      <div className="flex bg-bgSecond justify-center mx-auto p-8">
-        {gameState === "initial" && (
-          <div className="flex">
-            <Input
-              type="text"
-              value={roomUniqueId}
-              onChange={(e) => dispatch(setRoomUniqueId(e.target.value))}
-              placeholder="Enter room ID to join"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
-            />
-            <Button
-              onClick={joinGame}
-              className="bg-green-950 text-white font-bold py-2 px-4 rounded"
-            >
-              Join Game
-            </Button>
-          </div>
-        )}
-      </div>
-
       <div className="flex flex-col items-center justify-center mx-auto mt-28">
-        <h1 className="text-4xl font-bold mb-6 text-white ">
-          Rock, Paper, Scissors Game
-        </h1>
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
           <div className="mb-4">
             <Label className="block text-gray-700 text-sm font-bold mb-2">
@@ -119,12 +124,18 @@ const GetStarted = () => {
             <Input
               type="text"
               value={username}
-              onChange={(e) => dispatch(setUsername(e.target.value))}
+              onChange={(e) => {
+                const newUsername = e.target.value;
+                if (newUsername.length <= 7) {
+                  dispatch(setUsername(newUsername));
+                } else {
+                  toast.error("Username should not be greater than 7 letters.");
+                }
+              }}
               placeholder="Enter your username"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
-
           {gameState === "initial" && (
             <div>
               <Button
@@ -133,6 +144,33 @@ const GetStarted = () => {
               >
                 Create Game
               </Button>
+            </div>
+          )}
+          <div className="flex items-center my-4">
+            <hr className="flex-grow border-t border-gray-300" />
+            <span className="mx-4 text-gray-500">or</span>
+            <hr className="flex-grow border-t border-gray-300" />
+          </div>
+          {gameState === "initial" && (
+            <div className="mb-4">
+              <Label className="block text-gray-700 text-sm font-bold mb-2">
+                Enter Room ID to Join
+              </Label>
+              <div className="flex">
+                <Input
+                  type="text"
+                  value={roomUniqueId}
+                  onChange={(e) => dispatch(setRoomUniqueId(e.target.value))}
+                  placeholder="Enter room ID"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
+                />
+                <Button
+                  onClick={joinGame}
+                  className="bg-green-950 text-white font-bold py-2 px-4 rounded"
+                >
+                  Join Game
+                </Button>
+              </div>
             </div>
           )}
 

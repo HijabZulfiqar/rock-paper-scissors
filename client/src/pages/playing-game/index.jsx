@@ -141,21 +141,21 @@ const PlayingGame = () => {
         <div className="flex flex-col items-center justify-center flex-grow  ">
           {!playerChoice ? (
             <div className="flex justify-center  relative min-h-[14rem]">
-              <img src={triangle} alt="Triangle Layout" className="h-56" />
+              <img src={triangle} alt="Triangle Layout" className=" h-80" />
               <button
-                className="absolute bottom-44 left-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-paperRing hover:scale-110 transition-transform"
+                className="absolute  bottom-64 left-0 right-32  bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-paperRing hover:scale-110 transition-transform"
                 onClick={() => handleSendChoice("Paper")}
               >
                 <img src={paper} alt="Paper" />
               </button>
               <button
-                className="absolute top-36 right-[66%] left-[34.7%] bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-rockRing hover:scale-110 transition-transform"
+                className="absolute top-56 right-[66%] left-[34.7%] bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-rockRing hover:scale-110 transition-transform"
                 onClick={() => handleSendChoice("Rock")}
               >
                 <img src={rock} alt="Rock" />
               </button>
               <button
-                className="absolute bottom-44 right-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-scissorsRing hover:scale-110 transition-transform"
+                className="absolute bottom-64 right-0 bg-white p-6 w-24 h-24 rounded-full ring-[1rem] ring-scissorsRing hover:scale-110 transition-transform"
                 onClick={() => handleSendChoice("Scissors")}
               >
                 <img src={scissors} alt="Scissors" />
