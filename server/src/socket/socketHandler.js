@@ -1,4 +1,9 @@
-const { createRoom, getRoom, addUserToRoom, setPlayerChoice } = require("../services/roomService");
+const {
+  createRoom,
+  getRoom,
+  addUserToRoom,
+  setPlayerChoice,
+} = require("../services/roomService");
 const { checkForWinner } = require("../controllers/gameController");
 const generateId = require("../utils/generateId");
 
@@ -23,7 +28,9 @@ function handleSocket(io) {
       if (room) {
         addUserToRoom(data.roomUniqueId, socket.id, data.username);
         socket.join(data.roomUniqueId);
-        console.log(data.username + " joined the game with ID: " + data.roomUniqueId);
+        console.log(
+          data.username + " joined the game with ID: " + data.roomUniqueId
+        );
         io.to(data.roomUniqueId).emit("playersConnected", {
           usernames: room.usernames,
         });

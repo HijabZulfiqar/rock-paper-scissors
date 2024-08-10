@@ -1,9 +1,13 @@
-const { getRoom, resetChoices } = require("../services/roomService");
+const {
+  getRoom,
+  resetChoices,
+  saveGameResult,
+} = require("../services/roomService");
 
 function declareWinner(roomUniqueId, io) {
   const room = getRoom(roomUniqueId);
-  let p1Choice = room.p1Choice;
-  let p2Choice = room.p2Choice;
+  const p1Choice = room.p1Choice;
+  const p2Choice = room.p2Choice;
   let winner = null;
 
   if (p1Choice === p2Choice) {
@@ -18,7 +22,16 @@ function declareWinner(roomUniqueId, io) {
     winner = "p1";
   }
 
-  io.to(roomUniqueId).emit("result", { winner: winner });
+  io.to(roomUniqueId).emit("result", { winner });
+
+  const player1 = Object.values(room.usernames)[0];
+  const player2 = Object.values(room.usernames)[1];
+  saveGameResult(
+    player1,
+    player2,
+    winner === "draw" ? "draw" : winner === "p1" ? player1 : player2
+  );
+
   resetChoices(roomUniqueId);
 }
 

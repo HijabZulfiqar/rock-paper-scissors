@@ -1,6 +1,16 @@
 const Room = require("../models/Room");
 
+const GameResult = require("../models/Game");
 const rooms = {};
+
+function saveGameResult(player1, player2, winner) {
+  const newGameResult = new GameResult({
+    player1,
+    player2,
+    winner,
+  });
+  return newGameResult.save();
+}
 
 function createRoom(roomId) {
   rooms[roomId] = new Room();
@@ -37,4 +47,5 @@ module.exports = {
   removeUserFromRoom,
   setPlayerChoice,
   resetChoices,
+  saveGameResult,
 };
