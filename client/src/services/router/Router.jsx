@@ -2,7 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "../../Layout";
 import GetStarted from "../../pages/get-started/index";
 import PlayingGame from "../../pages/playing-game/index";
-import Rules from "../../pages/rules/index"; // Import the Rules component
+import Rules from "../../pages/rules/index";
+import GameRecord from "../../pages/game-record/index"; // Import the GameRecord component
 import NotFound from "../../pages/NotFound";
 
 const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "rules",
         element: <Rules />,
+      },
+      {
+        path: "game-record",
+        element: <GameRecord />,
       },
     ],
   },

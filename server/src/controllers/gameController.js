@@ -4,6 +4,8 @@ const {
   saveGameResult,
 } = require("../services/roomService");
 
+const Game = require("../models/Game");
+
 function declareWinner(roomUniqueId, io) {
   const room = getRoom(roomUniqueId);
   const p1Choice = room.p1Choice;
@@ -42,4 +44,18 @@ function checkForWinner(roomUniqueId, io) {
   }
 }
 
-module.exports = { declareWinner, checkForWinner };
+async function storeGameResult(player1, player2, winner) {
+  const game = new Game({ player1, player2, winner });
+  return await game.save();
+}
+
+async function getGames() {
+  return await Game.find({});
+}
+
+module.exports = {
+  declareWinner,
+  checkForWinner,
+  storeGameResult,
+  getGames,
+};

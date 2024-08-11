@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,8 +80,14 @@ const GetStarted = () => {
 
   return (
     <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst h-screen relative mx-auto">
-      <header className="flex justify-start p-4  border-b border-bgFirst ">
-        <img src={logo} alt="Logo" className="h-16" />{" "}
+      <header className="flex justify-between items-center p-4 border-b border-bgFirst">
+        <img src={logo} alt="Logo" className="h-16" />
+        <Link
+          to="/game-record"
+          className="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700"
+        >
+          Game Records
+        </Link>
       </header>
 
       <div className="absolute bottom-4 left-4">
