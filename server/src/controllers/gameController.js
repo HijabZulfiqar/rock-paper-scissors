@@ -15,9 +15,9 @@ function declareWinner(roomUniqueId, io) {
   if (p1Choice === p2Choice) {
     winner = "draw";
   } else if (
-    (p1Choice === "Paper" && p2Choice === "Scissor") ||
+    (p1Choice === "Paper" && p2Choice === "Scissors") ||
     (p1Choice === "Rock" && p2Choice === "Paper") ||
-    (p1Choice === "Scissor" && p2Choice === "Rock")
+    (p1Choice === "Scissors" && p2Choice === "Rock")
   ) {
     winner = "p2";
   } else {

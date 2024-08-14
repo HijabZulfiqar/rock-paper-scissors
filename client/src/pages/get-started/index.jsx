@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Copy, Check } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -17,12 +18,10 @@ import {
 import logo from "../../assets/images/logo.svg";
 
 const GetStarted = () => {
+  const [isCopied, setIsCopied] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { gameState, roomUniqueId, username } = useSelector(
-    (state) => state.game
-  );
-  const [viewRules, setViewRules] = useState(false);
+  const { gameState, roomUniqueId, username } = useSelector((state) => state.game);
 
   useEffect(() => {
     socket.on("newGame", (data) => {
@@ -64,8 +63,16 @@ const GetStarted = () => {
   };
 
   const joinGame = () => {
-    if (username.trim() === "") {
+    if (username.trim() === "" && roomUniqueId.trim() === "") {
+      toast.error("Please enter a username and Room ID to join a game.");
+      return;
+    }
+    if(username.trim() === ""){
       toast.error("Please enter a username to join a game.");
+      return;
+    }
+    if(roomUniqueId.trim() === ""){
+      toast.error("Please enter a Room ID to join a game.");
       return;
     }
     socket.emit("joinGame", { roomUniqueId, username: username.trim() });
@@ -73,8 +80,11 @@ const GetStarted = () => {
 
   const copyRoomCode = () => {
     navigator.clipboard.writeText(roomUniqueId).then(
-      () => toast.success("Room code copied to clipboard!"),
-      (err) => toast.error("Could not copy text: " + err)
+      () => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 5000);
+      },
+      (err) => console.error("Could not copy text: ", err)
     );
   };
 
@@ -82,25 +92,13 @@ const GetStarted = () => {
     <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst h-screen relative mx-auto">
       <header className="flex justify-between items-center p-4 border-b border-bgFirst">
         <img src={logo} alt="Logo" className="h-16" />
-        <Link
-          to="/game-record"
-          className="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700"
-        >
+        <Link to="/game-record" className="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700">
           Game Records
         </Link>
       </header>
 
       <div className="absolute bottom-4 left-4">
-        {/* <Button
-          onClick={showRules}
-          className="bg-[#184e77] text-white font-bold py-2 px-4 rounded"
-        >
-          Rules
-        </Button> */}
-        <Button
-          onClick={showRules}
-          className="flex bg-[#184e77] text-white gap-2 items-center group px-10"
-        >
+        <Button onClick={showRules} className="flex bg-[#184e77] text-white gap-2 items-center group px-10">
           <span>Rules</span>
           <span className="group-hover:translate-x-[-2px] transition-all">
             <svg
@@ -125,9 +123,7 @@ const GetStarted = () => {
       <div className="flex flex-col items-center justify-center mx-auto mt-28">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
           <div className="mb-4">
-            <Label className="block text-gray-700 text-sm font-bold mb-2">
-              Enter your name
-            </Label>
+            <Label className="block text-gray-700 text-sm font-bold mb-2">Enter your name</Label>
             <Input
               type="text"
               value={username}
@@ -160,9 +156,7 @@ const GetStarted = () => {
           </div>
           {gameState === "initial" && (
             <div className="mb-4">
-              <Label className="block text-gray-700 text-sm font-bold mb-2">
-                Enter Room ID to Join
-              </Label>
+              <Label className="block text-gray-700 text-sm font-bold mb-2">Enter Room ID to Join</Label>
               <div className="flex">
                 <Input
                   type="text"
@@ -171,25 +165,32 @@ const GetStarted = () => {
                   placeholder="Enter room ID"
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
                 />
-                <Button
-                  onClick={joinGame}
-                  className="bg-green-950 text-white font-bold py-2 px-4 rounded"
-                >
+                <Button onClick={joinGame} className="bg-green-950 text-white font-bold py-2 px-4 rounded">
                   Join Game
                 </Button>
               </div>
             </div>
           )}
-
           {gameState === "waiting" && (
             <div className="text-lg text-center">
-              Waiting for opponent, please share code{" "}
-              <span className="font-bold">{roomUniqueId}</span> to join
+              Waiting for opponent, please share code <span className="font-bold">{roomUniqueId}</span> to join
               <Button
-                className="ml-2 bg-indigo-500 hover:bg-indigo-700 text-white px-4 py-2 rounded mt-2"
+                className={`mx-auto text-white px-4 py-2 rounded mt-4 flex items-center transition-colors duration-200 ${
+                  isCopied ? "bg-green-700 hover:bg-green-800" : "bg-indigo-500 hover:bg-indigo-600"
+                }`}
                 onClick={copyRoomCode}
               >
-                Copy Code
+                {isCopied ? (
+                  <>
+                    <Check className="mr-2" size={16} />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-2" size={16} />
+                    Copy Code
+                  </>
+                )}
               </Button>
             </div>
           )}

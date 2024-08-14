@@ -5,6 +5,7 @@ import { DataTable } from "../../components/Datatable/data-table";
 import { fetchGameRecords } from "../../services/api/api";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
 
 function GameRecord() {
   const { data, error, isLoading } = useQuery({
@@ -13,7 +14,7 @@ function GameRecord() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-7xl"><LoaderCircle /></div>;
   }
 
   if (error) {
@@ -24,10 +25,27 @@ function GameRecord() {
     <div className="container mx-auto py-10">
       <h1 className="text-2xl font-bold mb-4">Game Records</h1>
       <DataTable columns={columns} data={data} />
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-8">
         <Link to="/get-started">
-          <Button className="bg-black text-white">
-            Back to get started Page
+          <Button className="bg-black text-white group">
+            Play game
+            <span className="group-hover:translate-x-[-2px] transition-all ms-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-chevrons-left"
+            >
+              <path d="m11 17-5-5 5-5" />
+              <path d="m18 17-5-5 5-5" />
+            </svg>
+          </span>
           </Button>
         </Link>
       </div>
