@@ -12,7 +12,7 @@ const Layout = () => {
   }, []);
 
   return (
-    <div>
+    <div className="bg-bgFirst bg-gradient-to-r from-bgSecond to-bgFirst">
       <Outlet />
       <Toaster />
     </div>
