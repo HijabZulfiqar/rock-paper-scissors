@@ -27,7 +27,7 @@ function GameRecord() {
 
   return (
     <div className="container mx-auto py-10 text-white ">
-      <h1 className="text-2xl font-bold mb-4">Game Records</h1>
+      <h1 className="text-2xl font-bold mb-4">Leader-Board</h1>
       <DataTable columns={columns} data={data} />
       <div className="flex justify-center mt-8">
         <Link to="/get-started">
